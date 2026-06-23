@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         hostname: "**.fourthwall.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "imgproxy.fourthwall.dev",
+        pathname: "/**",
+      },
     ],
   },
 };
