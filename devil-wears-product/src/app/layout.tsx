@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { SITE } from "@/lib/constants";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
@@ -39,6 +40,7 @@ export default async function RootLayout({
           <Footer />
           <CartDrawer />
         </CartProvider>
+        <Analytics />
       </body>
     </html>
   );
