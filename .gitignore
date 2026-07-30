@@ -1,0 +1,3 @@
+# Higgsfield-generated images/videos land here; don't commit the media itself
+/assets/*
+!/assets/.gitkeep
