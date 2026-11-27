@@ -26,16 +26,22 @@ export async function getProduct(slug: string): Promise<FWProduct | null> {
   }
 }
 
-export async function getAllProducts(): Promise<FWProduct[]> {
+// Fourthwall caps page size, so walk every page until the API says we're done.
+export async function getAllProducts(
+  collectionSlug: string = "all",
+): Promise<FWProduct[]> {
+  const PAGE_SIZE = 50;
+  const MAX_PAGES = 100; // safety valve against a misbehaving `hasNextPage`
   const allProducts: FWProduct[] = [];
-  let page = 0;
-  let hasNextPage = true;
 
-  while (hasNextPage) {
-    const response = await getProducts("all", page, 50);
-    allProducts.push(...response.results);
-    hasNextPage = response.paging.hasNextPage;
-    page++;
+  for (let page = 0; page < MAX_PAGES; page++) {
+    const { results, paging } = await getProducts(collectionSlug, page, PAGE_SIZE);
+    allProducts.push(...results);
+
+    const reachedTotal =
+      typeof paging?.elementsTotal === "number" &&
+      allProducts.length >= paging.elementsTotal;
+    if (!paging?.hasNextPage || results.length === 0 || reachedTotal) break;
   }
 
   return allProducts;

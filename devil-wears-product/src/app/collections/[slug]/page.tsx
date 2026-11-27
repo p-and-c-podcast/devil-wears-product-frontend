@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCollection, getCollectionProducts } from "@/lib/fourthwall/collections";
+import { getCollection } from "@/lib/fourthwall/collections";
+import { getAllProducts } from "@/lib/fourthwall/products";
 import { ProductGrid } from "@/components/product/product-grid";
 import { ScrollReveal } from "@/components/shared/scroll-reveal";
 import { SATIRE, SITE } from "@/lib/constants";
@@ -25,9 +26,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function CollectionPage({ params }: PageProps) {
   const { slug } = await params;
-  const [collection, { results: products }] = await Promise.all([
+  const [collection, products] = await Promise.all([
     getCollection(slug),
-    getCollectionProducts(slug),
+    getAllProducts(slug),
   ]);
 
   if (!collection) {
