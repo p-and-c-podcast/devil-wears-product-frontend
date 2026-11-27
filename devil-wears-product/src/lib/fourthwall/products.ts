@@ -1,23 +1,30 @@
 import { fourthwallGet } from "./api";
 import type { FWProduct, FWPaginatedResponse } from "./types";
 
+// The API omits `variants` for some product types (e.g. bundles). Default it so
+// UI code can always treat it as an array.
+function normalizeProduct(product: FWProduct): FWProduct {
+  return { ...product, variants: product.variants ?? [] };
+}
+
 export async function getProducts(
   collectionSlug: string = "all",
   page: number = 0,
   size: number = 50,
 ): Promise<FWPaginatedResponse<FWProduct>> {
-  return fourthwallGet<FWPaginatedResponse<FWProduct>>(
+  const response = await fourthwallGet<FWPaginatedResponse<FWProduct>>(
     `/collections/${collectionSlug}/products`,
     {
       page: page.toString(),
       size: size.toString(),
     },
   );
+  return { ...response, results: (response.results ?? []).map(normalizeProduct) };
 }
 
 export async function getProduct(slug: string): Promise<FWProduct | null> {
   try {
-    return await fourthwallGet<FWProduct>(`/products/${slug}`);
+    return normalizeProduct(await fourthwallGet<FWProduct>(`/products/${slug}`));
   } catch (error) {
     if (error instanceof Error && "status" in error && (error as any).status === 404) {
       return null;

@@ -69,6 +69,10 @@ export interface FWProduct {
   };
   images: FWImage[];
   variants: FWVariant[];
+  // Bundles (type "BUNDLE") have no variants; they carry a product-level price instead.
+  type?: string;
+  price?: FWPrice;
+  compareAtPrice?: FWPrice | null;
   createdAt: string;
   updatedAt: string;
 }

@@ -58,9 +58,11 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
   // Get price to display (selected variant or first variant)
   const displayPrice =
-    selectedVariant?.unitPrice ?? product.variants[0]?.unitPrice;
+    selectedVariant?.unitPrice ?? product.variants[0]?.unitPrice ?? product.price;
   const displayComparePrice =
-    selectedVariant?.compareAtPrice ?? product.variants[0]?.compareAtPrice;
+    selectedVariant?.compareAtPrice ??
+    product.variants[0]?.compareAtPrice ??
+    product.compareAtPrice;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">

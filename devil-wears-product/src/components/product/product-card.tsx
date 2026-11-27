@@ -17,8 +17,9 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const colors = getUniqueColors(product.variants);
   const defaultImage = product.images[0];
   const hoverImage = product.images[1];
-  const price = product.variants[0]?.unitPrice;
-  const compareAtPrice = product.variants[0]?.compareAtPrice;
+  const price = product.variants[0]?.unitPrice ?? product.price;
+  const compareAtPrice =
+    product.variants[0]?.compareAtPrice ?? product.compareAtPrice;
 
   // Get the first variant image matching a given color name
   function getVariantImageForColor(colorName: string): FWImage | null {
