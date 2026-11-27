@@ -9,7 +9,8 @@ export function formatPrice(price: { value: number; currency: string }): string 
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: price.currency,
-    minimumFractionDigits: 0,
+    // Whole amounts show as "$33"; others always get two decimals ("$29.70").
+    minimumFractionDigits: Number.isInteger(price.value) ? 0 : 2,
     maximumFractionDigits: 2,
   }).format(price.value);
 }

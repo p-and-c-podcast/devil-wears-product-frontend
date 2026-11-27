@@ -69,13 +69,21 @@ export interface FWProduct {
   };
   images: FWImage[];
   variants: FWVariant[];
-  // Bundles (type "BUNDLE") have no variants; they carry a product-level price instead.
-  type?: string;
+  // Bundles (type "BUNDLE") have no variants. They carry a product-level price
+  // and an `offers` list: one child product per bundle slot.
+  type?: "PRODUCT" | "BUNDLE";
   price?: FWPrice;
   compareAtPrice?: FWPrice | null;
+  pricingStrategy?: FWBundlePricingStrategy;
+  offers?: FWProduct[];
   createdAt: string;
   updatedAt: string;
 }
+
+export type FWBundlePricingStrategy =
+  | { type: "SAME_AS_INDIVIDUAL" }
+  | { type: "DISCOUNT_BASED"; discountPercentage: number }
+  | { type: "FIXED_PRICE"; price: FWPrice };
 
 export interface FWCollection {
   id: string;
@@ -111,10 +119,17 @@ export interface FWCartItemVariant extends FWVariant {
   };
 }
 
+export interface FWCartItemGroupedBy {
+  type: "BUNDLE";
+  bundleId: string;
+  // Identifies one bundle line in the cart (same bundle + same variant picks).
+  groupedId: string;
+}
+
 export interface FWCartItem {
   variant: FWCartItemVariant;
   quantity: number;
-  groupedBy: string | null;
+  groupedBy: FWCartItemGroupedBy | null;
 }
 
 export interface FWCart {

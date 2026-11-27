@@ -44,3 +44,32 @@ export async function removeFromCart(
     items: [{ variantId, quantity }],
   });
 }
+
+export interface FWCartLineItem {
+  variantId: string;
+  quantity: number;
+}
+
+// A bundle goes in as one item per child product, all sharing the bundle's
+// product id. The API rejects a bundle with a missing child.
+export async function addBundleToCart(
+  cartId: string,
+  bundleId: string,
+  variantIds: string[],
+  quantity: number = 1,
+): Promise<FWCart> {
+  return fourthwallPost<FWCart>(`/carts/${cartId}/add`, {
+    items: variantIds.map((variantId) => ({ variantId, quantity, bundleId })),
+  });
+}
+
+// Removes a whole bundle line. The API does not support /change for bundles.
+export async function removeBundleFromCart(
+  cartId: string,
+  bundleId: string,
+  items: FWCartLineItem[],
+): Promise<FWCart> {
+  return fourthwallPost<FWCart>(`/carts/${cartId}/remove`, {
+    items: items.map((item) => ({ ...item, bundleId })),
+  });
+}

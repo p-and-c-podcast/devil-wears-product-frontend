@@ -34,6 +34,15 @@ export const SATIRE = {
     removeLabel: "Deprioritize",
     itemSingular: "item",
     itemPlural: "items",
+    bundleLabel: "Cross-Functional Bundle",
+  },
+
+  bundle: {
+    badge: "Cross-Functional Bundle",
+    intro: "Scope each deliverable. Partial delivery is not an MVP.",
+    itemLabel: "Deliverable",
+    incomplete: "Pick a size for every deliverable. Stakeholders noticed.",
+    savings: "Synergy savings",
   },
 
   loading: [

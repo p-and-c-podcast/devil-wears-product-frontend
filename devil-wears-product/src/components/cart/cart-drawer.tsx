@@ -6,6 +6,8 @@ import { useCart } from "@/hooks/use-cart";
 import { SATIRE } from "@/lib/constants";
 import { formatPrice, getCheckoutUrl } from "@/lib/utils";
 import { CartItem } from "./cart-item";
+import { CartBundleItem } from "./cart-bundle-item";
+import { splitCartItems } from "@/lib/bundles";
 
 export function CartDrawer() {
   const { cart, isOpen, closeCart, itemCount, subtotal, currency } = useCart();
@@ -95,7 +97,10 @@ export function CartDrawer() {
               ) : (
                 <div className="p-6 space-y-0">
                   <AnimatePresence initial={false}>
-                    {cart.items.map((item) => (
+                    {splitCartItems(cart.items).bundles.map((line) => (
+                      <CartBundleItem key={line.groupedId} line={line} />
+                    ))}
+                    {splitCartItems(cart.items).singles.map((item) => (
                       <CartItem key={item.variant.id} item={item} />
                     ))}
                   </AnimatePresence>

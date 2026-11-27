@@ -8,18 +8,29 @@ import { cn } from "@/lib/utils";
 
 interface AddToCartButtonProps {
   variantId: string | null;
+  // Custom add action (e.g. a bundle). When set, the button is ready only if
+  // `ready` is true, and `variantId` is ignored.
+  onAdd?: () => Promise<void>;
+  ready?: boolean;
   className?: string;
 }
 
-export function AddToCartButton({ variantId, className }: AddToCartButtonProps) {
+export function AddToCartButton({
+  variantId,
+  onAdd,
+  ready,
+  className,
+}: AddToCartButtonProps) {
   const { addItem } = useCart();
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
+  const canAdd = onAdd ? Boolean(ready) : Boolean(variantId);
 
   const handleClick = async () => {
-    if (!variantId || status !== "idle") return;
+    if (!canAdd || status !== "idle") return;
     setStatus("loading");
     try {
-      await addItem(variantId);
+      if (onAdd) await onAdd();
+      else if (variantId) await addItem(variantId);
       setStatus("success");
       setTimeout(() => setStatus("idle"), 2000);
     } catch (error) {
@@ -30,13 +41,13 @@ export function AddToCartButton({ variantId, className }: AddToCartButtonProps) 
   return (
     <button
       onClick={handleClick}
-      disabled={!variantId || status === "loading"}
+      disabled={!canAdd || status === "loading"}
       className={cn(
         "w-full py-4 rounded-lg font-headline font-bold text-sm uppercase tracking-wider transition-all duration-200",
         status === "success"
           ? "bg-green-600 text-white"
           : "bg-pink hover:bg-pink-hover text-white",
-        (!variantId || status === "loading") && "opacity-50 cursor-not-allowed",
+        (!canAdd || status === "loading") && "opacity-50 cursor-not-allowed",
         className,
       )}
     >

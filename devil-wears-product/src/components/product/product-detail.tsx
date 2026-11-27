@@ -8,12 +8,20 @@ import { VariantSelector } from "./variant-selector";
 import { PriceDisplay } from "./price-display";
 import { ProductDescription } from "./product-description";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
+import { BundleDetail } from "./bundle-detail";
 
 interface ProductDetailProps {
   product: FWProduct;
 }
 
 export function ProductDetail({ product }: ProductDetailProps) {
+  if (product.type === "BUNDLE") {
+    return <BundleDetail product={product} />;
+  }
+  return <SingleProductDetail product={product} />;
+}
+
+function SingleProductDetail({ product }: ProductDetailProps) {
   const [selectedColor, setSelectedColor] = useState<string | null>(
     product.variants[0]?.attributes.color?.name ?? null,
   );
